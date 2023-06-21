@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    domains: [
+      "www.hilton.com",
+      "images.bubbleup.com",
+      "img.etimg.com",
+      "dynamic-media-cdn.tripadvisor.com",
+      "theenglishhotel.com",
+      "d1hkug86aarhhk.cloudfront.net",
+      "www.cvent.com",
+      "www.marriott.com",
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
