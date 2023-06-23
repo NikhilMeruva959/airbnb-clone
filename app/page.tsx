@@ -9,7 +9,8 @@ import Image from "next/image";
 import Container from "./components/Container";
 
 export default function Home() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
+  const [preciseData, setPreciseData] = useState([]);
 
   var randomPhoneNumber = faker.vehicle.vehicle();
   console.log(randomPhoneNumber);
@@ -150,28 +151,62 @@ export default function Home() {
   };
 
   //useEffect
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = {
+        method: "GET",
+        mode: "no-cors",
+        url: "http://localhost/api/location/search",
+        params: {
+          language: "en",
+          key: "2F8D049813734A53859A27A640E1F875",
+          searchQuery: "bridgewater",
+        },
+        headers: { accept: "application/json" },
+      };
 
-  // const options = {
-  //   method: "GET",
-  //   mode: "no-cors",
-  //   url: "/api/location/search",
-  //   params: {
-  //     language: "en",
-  //     key: "2F8D049813734A53859A27A640E1F875",
-  //     searchQuery: "bridgewater",
-  //   },
-  //   headers: { accept: "application/json" },
-  // };
+      try {
+        const response = await axios.request(options);
+        console.log(response.data);
+        setData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  // axios
-  //   .request(options)
-  //   .then(function (response) {
-  //     console.log(response.data);
-  //     sample = response.data;
-  //   })
-  //   .catch(function (error) {
-  //     console.error(error);
-  //   });
+    fetchData();
+  }, []); // Empty dependency array to run only once (on mount)
+
+  useEffect(() => {
+    const fetchSepcificData = async (param: number) => {
+      const options = {
+        method: "GET",
+        url: "http://localhost/api/location/locationId",
+        params: {
+          key: "2F8D049813734A53859A27A640E1F875",
+          language: "en",
+          currency: "USD",
+          locationId: 46325,
+        },
+        headers: { accept: "application/json" },
+      };
+
+      try {
+        const response = await axios.request(options);
+        console.log(response.data);
+        setPreciseData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    let locationId = 46325;
+    fetchSepcificData(locationId);
+  }, [data]);
+
+  console.log(data);
+  console.log(preciseData);
+  console.log("KKK");
 
   return (
     <>
