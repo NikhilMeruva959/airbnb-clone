@@ -9,8 +9,48 @@ import Image from "next/image";
 import Container from "./components/Container";
 
 export default function Home() {
-  const [data, setData] = useState([]);
+  // Define the interface for the address object
+  interface Address {
+    state: string;
+    country: string;
+    address_string: string;
+    street1?: string;
+    street2?: string;
+    city?: string;
+    postalcode?: string;
+  }
+
+  // Define the interface for each object inside the data array
+  interface LocationData {
+    location_id: string;
+    name: string;
+    address_obj: Address;
+  }
+
+  // The main interface representing the entire data object
+  interface DataObject {
+    dataa: LocationData[];
+  }
+
+  // Sample data based on the provided object
+  const dataa: DataObject = {
+    dataa: [
+      {
+        location_id: "46325",
+        name: "Bridgewater",
+        address_obj: {
+          state: "New Jersey",
+          country: "United States",
+          address_string: "Bridgewater, NJ",
+        },
+      },
+      // ... other objects ...
+    ],
+  };
+
+  const [data, setData] = useState<DataObject[]>([]);
   const [preciseData, setPreciseData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   var randomPhoneNumber = faker.vehicle.vehicle();
   console.log(randomPhoneNumber);
@@ -150,7 +190,7 @@ export default function Home() {
     ],
   };
 
-  //useEffect
+  // //useEffect
   useEffect(() => {
     const fetchData = async () => {
       const options = {
@@ -169,6 +209,7 @@ export default function Home() {
         const response = await axios.request(options);
         console.log(response.data);
         setData(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -177,74 +218,152 @@ export default function Home() {
     fetchData();
   }, []); // Empty dependency array to run only once (on mount)
 
-  useEffect(() => {
-    const fetchSepcificData = async (param: number) => {
-      const options = {
-        method: "GET",
-        url: "http://localhost/api/location/locationId",
-        params: {
-          key: "2F8D049813734A53859A27A640E1F875",
-          language: "en",
-          currency: "USD",
-          locationId: 46325,
-        },
-        headers: { accept: "application/json" },
-      };
+  // useEffect(() => {
+  //   // Simulate asynchronous data fetching
+  //   fetchData()
+  //     .then((fetchedData) => {
+  //       setData(fetchedData);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // }, []);
 
-      try {
-        const response = await axios.request(options);
-        console.log(response.data);
-        setPreciseData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // const fetchData = async () => {
+  //   // Your data fetching logic here
+  //   // For example, using fetch or any other method to get data from an API
+  //   const options = {method: 'GET', headers: {accept: 'application/json'}};
 
-    let locationId = 46325;
-    fetchSepcificData(locationId);
-  }, [data]);
+  //   const response = await fetch('https://api.content.tripadvisor.com/api/v1/location/search?key=2F8D049813734A53859A27A640E1F875&searchQuery=bridgewater', options);
+  //   const data = await response.json();
+  //   return data;
+  // };
 
+  //---------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // useEffect(() => {
+  //   const fetchSepcificData = async (param: number) => {
+  //     const options = {
+  //       method: "GET",
+  //       url: "http://localhost/api/location/locationId",
+  //       params: {
+  //         key: "2F8D049813734A53859A27A640E1F875",
+  //         language: "en",
+  //         currency: "USD",
+  //         locationId: param,
+  //       },
+  //       headers: { accept: "application/json" },
+  //     };
+
+  //     try {
+  //       const response = await axios.request(options);
+  //       console.log(response.data);
+  //       setPreciseData(response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   // let locationId = 46325;
+  //   // fetchSepcificData(locationId);
+
+  //   // for (let i = 0; i < data.length; i++) {
+  //   //   fetchSepcificData(data[i][0]);
+  //   // }
+  //   fetchSepcificData();
+  // }, [data]);
+
+  if (isLoading) {
+    return <div>Loading5...</div>;
+  }
+
+  console.log("KKK1");
   console.log(data);
-  console.log(preciseData);
-  console.log("KKK");
+  // useEffect(() => {
+  //   setData(tempArr.hotels);
+  // }, []);
+  console.log(data);
+  console.log("KKK2");
+  console.log(Object.keys(data));
+  console.log(data["data"][0]);
+  console.log(JSON.stringify(data));
+  // const firstElement = data && data.length > 0 ? data[0] : null;
+  // console.log(firstElement);
 
   return (
-    <>
-      <Container>
-        <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-          {tempArr.hotels.map((listing: any) => {
-            return (
-              <div
-                onClick={() => "/"}
-                className="col-span-1 cursor-pointer group"
-              >
-                <div className="flex flex-col gap-2 w-full">
-                  <div className="aspect-square w-full relative overflow-hidden rounded-xl">
-                    <Image
-                      fill
-                      alt="Listing"
-                      src={listing.imageSrc}
-                      className="object-cover h-ful w-full group-hover:scale-110 transition"
-                    />
-                  </div>
-                  <div className="font-semibold text-lg">
-                    {listing?.shortDes}
-                  </div>
-                  <div className="font-light text-neutral-500">
-                    {listing?.distance}
-                  </div>
-                  <div className="font-light text-neutral-500">
-                    {listing?.date}
-                  </div>
-                  <div className="flex flex-row items-center gap-1">
-                    <div className="font-semibold">{listing?.rent}</div>
-                  </div>
+    //   <>
+    //     {/* <Container>
+    //       <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+    //         {tempArr.hotels.map((listing: any) => {
+    //           return (
+    //             <div
+    //               onClick={() => "/"}
+    //               className="col-span-1 cursor-pointer group"
+    //             >
+    //               <div className="flex flex-col gap-2 w-full">
+    //                 <div className="aspect-square w-full relative overflow-hidden rounded-xl">
+    //                   <Image
+    //                     fill
+    //                     alt="Listing"
+    //                     src={listing.imageSrc}
+    //                     className="object-cover h-ful w-full group-hover:scale-110 transition"
+    //                   />
+    //                 </div>
+    //                 <div className="font-semibold text-lg">
+    //                   {listing?.shortDes}
+    //                 </div>
+    //                 <div className="font-light text-neutral-500">
+    //                   {listing?.distance}
+    //                 </div>
+    //                 <div className="font-light text-neutral-500">
+    //                   {listing?.date}
+    //                 </div>
+    //                 <div className="flex flex-row items-center gap-1">
+    //                   <div className="font-semibold">{listing?.rent}</div>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           );
+    //         })}
+    //       </div>
+    //     </Container> */}
+
+    <Container>
+      <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+        {data["data"].map((listing: any) => {
+          return (
+            <div
+              onClick={() => "/"}
+              className="col-span-1 cursor-pointer group"
+            >
+              <div className="flex flex-col gap-2 w-full">
+                <div className="aspect-square w-full relative overflow-hidden rounded-xl">
+                  <Image
+                    fill
+                    alt="Listing"
+                    src={
+                      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/ec/4f/1f/ocean-place-resort-spa.jpg?w=1200&h=-1&s=1"
+                    }
+                    className="object-cover h-ful w-full group-hover:scale-110 transition"
+                  />
+                </div>
+                <div className="font-semibold text-lg">{listing?.name}</div>
+                <div className="font-light text-neutral-500">
+                  {listing?.distance}
+                </div>
+                <div className="font-light text-neutral-500">
+                  {listing?.date}
+                </div>
+                <div className="flex flex-row items-center gap-1">
+                  <div className="font-semibold">{listing?.rent}</div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </Container>
-    </>
+            </div>
+          );
+        })}
+      </div>
+      {/* <h1 className="font-semibold">{data["data"][0].name}</h1> */}
+    </Container>
+    //   </>
   );
 }
