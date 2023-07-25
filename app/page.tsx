@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
 
@@ -9,6 +9,18 @@ import Image from "next/image";
 import Container from "./components/Container";
 
 export default function Home() {
+  const useEffectOnlyOnUpdate = (callback: any, dependencies: any) => {
+    const didMount = useRef(false);
+
+    useEffect(() => {
+      if (didMount.current) {
+        callback(dependencies);
+      } else {
+        didMount.current = true;
+      }
+    }, [callback, dependencies]);
+  };
+
   // Define the interface for the address object
   interface Address {
     state: string;
@@ -50,6 +62,7 @@ export default function Home() {
 
   const [data, setData] = useState<DataObject[]>([]);
   const [preciseData, setPreciseData] = useState([]);
+  const [photoData, setPhotoData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   var randomPhoneNumber = faker.vehicle.vehicle();
@@ -218,26 +231,48 @@ export default function Home() {
     fetchData();
   }, []); // Empty dependency array to run only once (on mount)
 
-  // useEffect(() => {
-  //   // Simulate asynchronous data fetching
-  //   fetchData()
-  //     .then((fetchedData) => {
-  //       setData(fetchedData);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, []);
+  // //useEffect
+  useEffect(() => {
+    console.log(data);
 
-  // const fetchData = async () => {
-  //   // Your data fetching logic here
-  //   // For example, using fetch or any other method to get data from an API
-  //   const options = {method: 'GET', headers: {accept: 'application/json'}};
+    console.log("i fire once");
 
-  //   const response = await fetch('https://api.content.tripadvisor.com/api/v1/location/search?key=2F8D049813734A53859A27A640E1F875&searchQuery=bridgewater', options);
-  //   const data = await response.json();
-  //   return data;
-  // };
+    // fetchDataPhotos(idVar);
+  }, [data]); // Empty dependency array to run only once (on mount)
+
+  useEffectOnlyOnUpdate(
+    (dependencies: any) => {
+      const fetchDataPhotos = async (locId: any) => {
+        const options = {
+          method: "GET",
+          mode: "no-cors",
+          url: "http://localhost/api/location/photos",
+          params: {
+            language: "en",
+            key: "2F8D049813734A53859A27A640E1F875",
+            locationId: locId,
+          },
+          headers: { accept: "application/json" },
+        };
+        try {
+          const response = await axios.request(options);
+          console.log(response.data);
+          // setPhotoData((prevData: any) => prevData + response.data);
+          setPhotoData(response.data);
+
+          // setIsLoading(false);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      const dataArray = data;
+
+      for (const item of dataArray["data"]) {
+        fetchDataPhotos(item.location_id);
+      }
+    },
+    [data]
+  );
 
   //---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -287,6 +322,7 @@ export default function Home() {
   console.log(Object.keys(data));
   console.log(data["data"][0]);
   console.log(JSON.stringify(data));
+  console.log(photoData);
   // const firstElement = data && data.length > 0 ? data[0] : null;
   // console.log(firstElement);
 
