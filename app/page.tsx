@@ -267,9 +267,9 @@ export default function Home() {
       };
       const dataArray = data;
 
-      for (const item of dataArray["data"]) {
-        fetchDataPhotos(item.location_id);
-      }
+      // for (const item of dataArray["data"]) {
+      //   fetchDataPhotos(item.location_id);
+      // }
     },
     [data]
   );
