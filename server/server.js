@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.get("/api/location/search", async (req, res) => {
   const { language, key, searchQuery } = req.query;
-  const targetUrl = `https://api.content.tripadvisor.com/api/v1/location/search?key=${key}&searchQuery=${searchQuery}&language=${language}`;
+  const targetUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=hotels%20in%20${searchQuery}&key=${key}`;
 
   try {
     const response = await axios.get(targetUrl);

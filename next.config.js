@@ -10,6 +10,8 @@ const nextConfig = {
       "d1hkug86aarhhk.cloudfront.net",
       "www.cvent.com",
       "www.marriott.com",
+      "maps.gstatic.com",
+      "maps.googleapis.com",
     ],
   },
 };

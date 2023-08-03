@@ -212,8 +212,8 @@ export default function Home() {
         url: "http://localhost/api/location/search",
         params: {
           language: "en",
-          key: "2F8D049813734A53859A27A640E1F875",
-          searchQuery: "bridgewater",
+          key: "AIzaSyCr5Gyb_aIePJCD_4CAuDPZOLKsA0RkCig",
+          searchQuery: "Bridgewater",
         },
         headers: { accept: "application/json" },
       };
@@ -320,7 +320,6 @@ export default function Home() {
   console.log(data);
   console.log("KKK2");
   console.log(Object.keys(data));
-  console.log(data["data"][0]);
   console.log(JSON.stringify(data));
   console.log(photoData);
   // const firstElement = data && data.length > 0 ? data[0] : null;
@@ -366,7 +365,7 @@ export default function Home() {
 
     <Container>
       <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-        {data["data"].map((listing: any) => {
+        {data["results"].map((listing: any) => {
           return (
             <div
               onClick={() => "/"}
@@ -377,21 +376,19 @@ export default function Home() {
                   <Image
                     fill
                     alt="Listing"
-                    src={
-                      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/ec/4f/1f/ocean-place-resort-spa.jpg?w=1200&h=-1&s=1"
-                    }
+                    src={`https://maps.googleapis.com/maps/api/place/photo?photoreference=${listing.photos[0].photo_reference}&sensor=false&maxheight=400&maxwidth=400&key=AIzaSyCr5Gyb_aIePJCD_4CAuDPZOLKsA0RkCig`}
                     className="object-cover h-ful w-full group-hover:scale-110 transition"
                   />
                 </div>
                 <div className="font-semibold text-lg">{listing?.name}</div>
                 <div className="font-light text-neutral-500">
-                  {listing?.distance}
+                  {/* {listing?.rating} */}
                 </div>
                 <div className="font-light text-neutral-500">
-                  {listing?.date}
+                  {/* {listing?.user_ratings_total} */}
                 </div>
                 <div className="flex flex-row items-center gap-1">
-                  <div className="font-semibold">{listing?.rent}</div>
+                  <div className="font-semibold">{listing?.rating}</div>
                 </div>
               </div>
             </div>
