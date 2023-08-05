@@ -12,6 +12,7 @@ const nextConfig = {
       "www.marriott.com",
       "maps.gstatic.com",
       "maps.googleapis.com",
+      "maps.googleapis.com",
     ],
   },
 };

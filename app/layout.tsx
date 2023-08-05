@@ -6,6 +6,7 @@ import Modal from "./components/modals/Modal";
 import LoginModal from "./components/modals/LoginModal";
 import RegisterModal from "./components/modals/RegisterModal";
 import ToastProvider from "./providers/ToasterProvider";
+import SearchModal from "./components/modals/SearchModal";
 // import getCurrentUser from "./actions/getCurrentUser";
 
 const font = Nunito({ subsets: ["latin"] });
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={font.className}>
         <ClientOnly>
           <ToastProvider />
+          <SearchModal />
           <LoginModal />
           <RegisterModal />
           <Navbar />

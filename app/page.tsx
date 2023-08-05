@@ -21,6 +21,11 @@ export default function Home() {
     }, [callback, dependencies]);
   };
 
+  interface Place {
+    name: string;
+    rating: number;
+  }
+
   // Define the interface for the address object
   interface Address {
     state: string;
@@ -325,6 +330,12 @@ export default function Home() {
   // const firstElement = data && data.length > 0 ? data[0] : null;
   // console.log(firstElement);
 
+  function sortByRating(): void {
+    const tempData = data?.results.sort((a, b) => b.rating - a.rating);
+    console.log(tempData);
+    setData(tempData);
+  }
+
   return (
     //   <>
     //     {/* <Container>
@@ -364,39 +375,40 @@ export default function Home() {
     //     </Container> */}
 
     <Container>
-      <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-        {data["results"].map((listing: any) => {
-          return (
-            <div
-              onClick={() => "/"}
-              className="col-span-1 cursor-pointer group"
-            >
-              <div className="flex flex-col gap-2 w-full">
-                <div className="aspect-square w-full relative overflow-hidden rounded-xl">
-                  <Image
-                    fill
-                    alt="Listing"
-                    src={`https://maps.googleapis.com/maps/api/place/photo?photoreference=${listing.photos[0].photo_reference}&sensor=false&maxheight=400&maxwidth=400&key=AIzaSyCr5Gyb_aIePJCD_4CAuDPZOLKsA0RkCig`}
-                    className="object-cover h-ful w-full group-hover:scale-110 transition"
-                  />
-                </div>
-                <div className="font-semibold text-lg">{listing?.name}</div>
-                <div className="font-light text-neutral-500">
-                  {/* {listing?.rating} */}
-                </div>
-                <div className="font-light text-neutral-500">
-                  {/* {listing?.user_ratings_total} */}
-                </div>
-                <div className="flex flex-row items-center gap-1">
-                  <div className="font-semibold">{listing?.rating}</div>
+      <>
+        <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+          <button onClick={sortByRating}>Sort by Rating</button>
+          {data["results"]?.map((listing: any) => {
+            return (
+              <div
+                onClick={() => "/"}
+                className="col-span-1 cursor-pointer group"
+              >
+                <div className="flex flex-col gap-2 w-full">
+                  <div className="aspect-square w-full relative overflow-hidden rounded-xl">
+                    <Image
+                      fill
+                      alt="Listing"
+                      src={`https://maps.googleapis.com/maps/api/place/photo?photoreference=${listing.photos[0].photo_reference}&sensor=false&maxheight=400&maxwidth=400&key=AIzaSyCr5Gyb_aIePJCD_4CAuDPZOLKsA0RkCig`}
+                      className="object-cover h-ful w-full group-hover:scale-110 transition"
+                    />
+                  </div>
+                  <div className="font-semibold text-lg">{listing?.name}</div>
+                  <div className="font-light text-neutral-500">
+                    {/* {listing?.rating} */}
+                  </div>
+                  <div className="font-light text-neutral-500">
+                    {/* {listing?.user_ratings_total} */}
+                  </div>
+                  <div className="flex flex-row items-center gap-1">
+                    <div className="font-semibold">{listing?.rating}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-      {/* <h1 className="font-semibold">{data["data"][0].name}</h1> */}
+            );
+          })}
+        </div>
+      </>
     </Container>
-    //   </>
   );
 }
